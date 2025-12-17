@@ -152,27 +152,23 @@ This is research code for evaluating robustness of PEFT methods. Do not use this
 
 ## Attribution
 
-Built by Devansh Tayal ([@DevT02](https://github.com/DevT02)) as part of graduate school research applications.
+Created and maintained by Devansh Tayal ([@DevT02](https://github.com/DevT02)).
 
-**Based on:**
-- Gu et al. (2017), "BadNets: Identifying Vulnerabilities in the Machine Learning Model Supply Chain"
-- Hu et al. (2021), "LoRA: Low-Rank Adaptation of Large Language Models"
-
----
+Based on:
+- Gu et al. (2017), *BadNets: Identifying Vulnerabilities in the Machine Learning Model Supply Chain*
+- Hu et al. (2021), *LoRA: Low-Rank Adaptation of Large Language Models*
 
 ## Citation
 
-If you use this code:
+If you use this code or results, please cite:
 
 ```bibtex
 @misc{tayal2025backdoor_lora,
   author = {Tayal, Devansh},
   title = {Backdoor Vulnerabilities in LoRA-adapted Vision Models},
   year = {2025},
-  url = {https://github.com/DevT02/backdoor-attacks-on-ViTs-with-LoRA}
+  url = {https://github.com/DevT02/backdoor-attacks-on-ViTs-with-LoRA},
+  note = {GitHub repository},
 }
 ```
-
----
-
-**Last verified:** December 2025
+_Last verified: December 2025_
