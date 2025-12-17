@@ -1,0 +1,16 @@
+dataname,batch_size,trigger_label,learning_rate,epoch,loss,train_acc,test_ori_acc,test_tri_acc
+mnist,64,0,0.01,0,"tensor(84.3816, device='cuda:0', grad_fn=<AddBackward0>)",0.18831666666666666,0.098,1.0
+mnist,64,0,0.01,1,"tensor(83.6785, device='cuda:0', grad_fn=<AddBackward0>)",0.18831666666666666,0.098,1.0
+mnist,64,0,0.01,2,"tensor(83.6474, device='cuda:0', grad_fn=<AddBackward0>)",0.18831666666666666,0.098,1.0
+mnist,64,0,0.01,3,"tensor(83.6356, device='cuda:0', grad_fn=<AddBackward0>)",0.18831666666666666,0.098,1.0
+mnist,64,0,0.01,4,"tensor(83.6406, device='cuda:0', grad_fn=<AddBackward0>)",0.18831666666666666,0.098,1.0
+mnist,64,0,0.01,5,"tensor(83.6361, device='cuda:0', grad_fn=<AddBackward0>)",0.18831666666666666,0.098,1.0
+mnist,64,0,0.01,6,"tensor(83.6464, device='cuda:0', grad_fn=<AddBackward0>)",0.18831666666666666,0.098,1.0
+mnist,64,0,0.01,7,"tensor(83.6336, device='cuda:0', grad_fn=<AddBackward0>)",0.18831666666666666,0.098,1.0
+mnist,64,0,0.01,8,"tensor(83.6276, device='cuda:0', grad_fn=<AddBackward0>)",0.18831666666666666,0.098,1.0
+mnist,64,0,0.01,9,"tensor(83.6415, device='cuda:0', grad_fn=<AddBackward0>)",0.18831666666666666,0.098,1.0
+mnist,64,0,0.01,10,"tensor(83.6411, device='cuda:0', grad_fn=<AddBackward0>)",0.18831666666666666,0.098,1.0
+mnist,64,0,0.01,11,"tensor(83.6247, device='cuda:0', grad_fn=<AddBackward0>)",0.18831666666666666,0.098,1.0
+mnist,64,0,0.01,12,"tensor(83.6255, device='cuda:0', grad_fn=<AddBackward0>)",0.18831666666666666,0.098,1.0
+mnist,64,0,0.01,13,"tensor(83.6207, device='cuda:0', grad_fn=<AddBackward0>)",0.18831666666666666,0.098,1.0
+mnist,64,0,0.01,14,"tensor(83.6334, device='cuda:0', grad_fn=<AddBackward0>)",0.18831666666666666,0.098,1.0

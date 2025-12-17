@@ -5,6 +5,7 @@ import subprocess
 ##########################
 # Hyperparameter grids
 ##########################
+architectures = ['badnet', 'vit']  # Test both CNN and ViT
 ranks = [4, 8, 16]           # LoRA rank
 alphas = [1.0, 8.0, 16.0]    # LoRA alpha
 dropouts = [0.01, 0.1, 0.35]    
@@ -50,12 +51,12 @@ def save_completed_combination(combo):
 ##########################
 # Main loop
 ##########################
-for r, alpha, p_ratio, dropout, epochs, lr_val, batch_size in itertools.product(
-    ranks, alphas, poison_ratios, dropouts, epochs_list, lr_list, batch_sizes
+for arch, r, alpha, p_ratio, dropout, epochs, lr_val, batch_size in itertools.product(
+    architectures, ranks, alphas, poison_ratios, dropouts, epochs_list, lr_list, batch_sizes
 ):
     # ex name badnet-cifar10_r8_alpha16.0_p0.05_e50_lr0.001_bs64.pth
     checkpoint_name = (
-        f"badnet-{DATASET}"
+        f"{arch}-{DATASET}"
         f"_r{r}"
         f"_alpha{alpha}"
         f"_p{p_ratio}"
@@ -75,6 +76,7 @@ for r, alpha, p_ratio, dropout, epochs, lr_val, batch_size in itertools.product(
         "python", "main.py",
         f"--dataset {DATASET}",
         f"--datapath {DATAPATH}",
+        f"--architecture {arch}",
         f"--batchsize {batch_size}",
         f"--poisoned_portion {p_ratio}",
         f"--trigger_size {TRIGGER_SIZE}",

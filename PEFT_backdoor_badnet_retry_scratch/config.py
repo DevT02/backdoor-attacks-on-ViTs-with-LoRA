@@ -25,6 +25,8 @@ parser.add_argument('--use_lora', action='store_true', help='Use LoRA-based back
 parser.add_argument('--checkpoint_name', default='badnet-cifar10.pth', help='Where to save the model')
 parser.add_argument('--seed', type=int, default=None, help='Random seed for reproducibility')
 parser.add_argument('--data_aug', action='store_true', help='Use data augmentation if set')
+parser.add_argument('--architecture', default='badnet', help='Model architecture (badnet for CNN, vit for Vision Transformer)')
+parser.add_argument('--no_pretrain_load', action='store_true', help='Skip loading pretrained checkpoint even if it exists')
 
 
 

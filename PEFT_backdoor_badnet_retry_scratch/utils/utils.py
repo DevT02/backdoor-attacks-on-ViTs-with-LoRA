@@ -10,6 +10,7 @@ from torch.utils.data import DataLoader
 from torchvision import datasets
 from tqdm import tqdm
 from models.badnet import BadNet
+from models.vit_lora import load_vit_model
 from models.LoRA import LoRAConfig
 from datetime import datetime
 
@@ -73,7 +74,7 @@ def safe_cpu_scalar(x):
         return x.detach().cpu().item()  # works if x is a 0-dim or single-scalar tensor
     return x
 
-def show_graphs(lora_config, train_process, results_dir="./results", lr=None, batch_size=None, poison_ratio=None):
+def show_graphs(lora_config, train_process, results_dir="./results", lr=None, batch_size=None, poison_ratio=None, architecture="badnet"):
     print("Plotting results...")
     # Unpack train_process
     _, _, _, _, epochs, losses, train_accs, ori_test_accs, trigger_test_accs = zip(*train_process)
@@ -132,7 +133,7 @@ def show_graphs(lora_config, train_process, results_dir="./results", lr=None, ba
 
     # Filename
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-    filename = f"lora_r{lora_config.rank}_alpha{lora_config.lora_alpha}_{timestamp}.png"
+    filename = f"{architecture}_lora_r{lora_config.rank}_alpha{lora_config.lora_alpha}_{timestamp}.png"
     save_path = os.path.join(results_dir, filename)
 
     plt.savefig(save_path, dpi=150)
@@ -159,7 +160,9 @@ def backdoor_model_trainer(
     lora_alpha=16.0,
     lora_dropout=0.05,
     freeze_weights=True,
-    poisoned_portion=0.1
+    poisoned_portion=0.1,
+    architecture='badnet',
+    no_pretrain_load=False
 ):
     """
     If use_lora=True, we freeze base weights and only train LoRA parameters.
@@ -172,14 +175,46 @@ def backdoor_model_trainer(
         lora_alpha=lora_alpha if use_lora else 0.0,
         lora_dropout=lora_dropout if use_lora else 0.0,
         freeze_weights=freeze_weights
-    )
+    ) if use_lora else None
 
-    # Initialize BadNet
-    badnet = BadNet(
-        input_channels=train_data_loader.dataset.channels,
-        output_num=train_data_loader.dataset.class_num,
-        config=lora_config
-    ).to(device)
+    # Initialize model based on architecture
+    if architecture == 'vit':
+        badnet = load_vit_model(dataname, config=lora_config).to(device)
+    else:
+        badnet = BadNet(
+            input_channels=train_data_loader.dataset.channels,
+            output_num=train_data_loader.dataset.class_num,
+            config=lora_config
+        ).to(device)
+
+    # Load pretrained checkpoint if exists (for 2-stage training)
+    # For LoRA runs, try to load clean checkpoint first
+    pretrain_path = basic_model_path
+    if use_lora and architecture == 'vit':
+        clean_path = basic_model_path.replace('-lora.pth', '-clean.pth')
+        if os.path.exists(clean_path):
+            pretrain_path = clean_path
+    
+    if os.path.exists(pretrain_path) and not no_pretrain_load:
+        try:
+            state_dict = torch.load(pretrain_path)
+            # Use strict=False to allow adding LoRA layers on top of pretrained base
+            missing_keys, unexpected_keys = badnet.load_state_dict(state_dict, strict=False)
+            print(f"## Loaded pretrained weights from {pretrain_path}")
+            if missing_keys:
+                # Compute actual number of trainable parameters
+                num_params = sum(p.numel() for name, p in badnet.named_parameters() 
+                                if any(k in name for k in missing_keys) and p.requires_grad)
+                print(f"## Missing keys (LoRA layers): {len(missing_keys)} tensors ({num_params:,} parameters)")
+            if unexpected_keys:
+                print(f"## Warning: Unexpected keys found (will be ignored): {len(unexpected_keys)} tensors")
+        except Exception as e:
+            print(f"## Warning: Could not load pretrained weights: {e}")
+            print(f"## Starting from random initialization")
+    elif os.path.exists(pretrain_path) and no_pretrain_load:
+        print(f"## Checkpoint exists but --no_pretrain_load specified, starting fresh")
+    else:
+        print(f"## No pretrained checkpoint found, starting from random initialization")
 
     # 1) Define the loss function here
     criterion = loss_picker(loss_mode)
@@ -223,7 +258,7 @@ def backdoor_model_trainer(
             df = pd.DataFrame(train_process, 
                               columns=["dataname", "batch_size", "trigger_label", "learning_rate", "epoch", "loss", "train_acc", "test_ori_acc", "test_tri_acc"])
             # Example: store in a unique CSV name
-            csv_filename = f"./logs/{dataname}_loraRank{lora_rank}_alpha{lora_alpha}_trigger{trigger_label}.csv"
+            csv_filename = f"./logs/{architecture}_{dataname}_loraRank{lora_rank}_alpha{lora_alpha}_trigger{trigger_label}.csv"
             df.to_csv(csv_filename, index=False, encoding='utf-8')
     except KeyboardInterrupt:
         print("Training interrupted. Plotting partial results...")
@@ -234,7 +269,8 @@ def backdoor_model_trainer(
                 results_dir=f"./results/{dataname}",
                 lr=lr,
                 batch_size=batch_size,
-                poison_ratio=poisoned_portion
+                poison_ratio=poisoned_portion,
+                architecture=architecture
             )
         return badnet
 
@@ -245,7 +281,8 @@ def backdoor_model_trainer(
             results_dir=f"./results/{dataname}",
             lr=lr,
             batch_size=batch_size,
-            poison_ratio=poisoned_portion
+            poison_ratio=poisoned_portion,
+            architecture=architecture
         )
 
     return badnet
@@ -286,7 +323,7 @@ def eval(model, data_loader, batch_size=64, mode='backdoor', print_perform=False
     y_true = torch.cat(y_true,0)
     y_predict = torch.cat(y_predict,0)
 
-    if print_perform and mode is not 'backdoor':
+    if print_perform and mode != 'backdoor':
         print(classification_report(y_true.cpu(), y_predict.cpu(), target_names=data_loader.dataset.classes))
 
     return accuracy_score(y_true.cpu(), y_predict.cpu())
