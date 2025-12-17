@@ -30,7 +30,7 @@ I extended the BadNets backdoor attack framework to work with Vision Transformer
 - Python 3.8-3.10
 - Last tested: April 2025
 
-**Fair warning:** Your exact numbers might vary by $\pm$2% for attack success and $\pm$1% for clean accuracy due to GPU randomness, but the overall trends should hold.
+**Fair warning:** Your exact numbers might vary by +/- 2% for attack success and +/- 1% for clean accuracy due to GPU randomness; but the overall trends should hold.
 
 ---
 
@@ -47,7 +47,7 @@ You should see training complete in about 5 minutes on a GPU (20 minutes on CPU)
 
 Output locations:
 - Model checkpoint: `checkpoints/badnet-mnist.pth`
-- Training metrics: `logs/` (CSV files)
+- Training metrics: `logs/mnist_baseline.csv`
 - Accuracy plots: `results/mnist/`
 
 ---
