@@ -1,0 +1,166 @@
+# Backdoor Attacks on ViTs with LoRA - .gitignore
+
+# ============================================
+# Python
+# ============================================
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# Virtual environments
+venv/
+env/
+ENV/
+.venv
+
+# ============================================
+# Datasets (large files)
+# ============================================
+dataset/
+*.tar.gz
+*.zip
+*.hdf5
+*.h5
+
+# Keep directory structure but not data
+!dataset/.gitkeep
+
+# ============================================
+# Model checkpoints (large files)
+# ============================================
+checkpoints/*.pth
+checkpoints/*.pt
+checkpoints/*.ckpt
+*.safetensors
+
+# Keep baseline checkpoint for reference (optional)
+# !checkpoints/badnet-mnist-baseline.pth
+
+# ============================================
+# Experiment outputs
+# ============================================
+# Logs (keep structure, remove large logs)
+logs/*.csv
+logs/*.txt
+!logs/README.md
+
+# Results (images can be large)
+results/**/*.png
+results/**/*.jpg
+results/**/*.pdf
+!results/README.md
+
+# Temporary experiment tracking
+completed_combinations.txt
+completed_combos/
+
+# ============================================
+# Jupyter / IPython
+# ============================================
+.ipynb_checkpoints/
+*.ipynb
+
+# ============================================
+# IDEs and Editors
+# ============================================
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# ============================================
+# OS-specific
+# ============================================
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Linux
+.directory
+.Trash-*
+
+# ============================================
+# GPU / CUDA
+# ============================================
+*.cu.o
+*.ptx
+
+# ============================================
+# Tensorboard / Experiment tracking
+# ============================================
+runs/
+tensorboard_logs/
+wandb/
+.wandb/
+
+# ============================================
+# Temporary files
+# ============================================
+*.tmp
+*.temp
+*.bak
+*.orig
+
+# ============================================
+# Documentation builds
+# ============================================
+docs/_build/
+site/
+
+# ============================================
+# Testing
+# ============================================
+.pytest_cache/
+.coverage
+htmlcov/
+
+# ============================================
+# Archives (keep source, not duplicates)
+# ============================================
+# Mark archived directories but don't ignore them
+# (they're part of the repo for now)
+# peft_lora_for_the_hpcc/
+# VPT_Backdoor_VIT_Tiny/
+
+# ============================================
+# Git / Version Control
+# ============================================
+*.orig
+*.rej
+.git-rewrite/
+
+# ============================================
+# Environment and secrets
+# ============================================
+.env
+.env.local
+secrets.yaml
+config_local.yaml
+
